@@ -1,23 +1,19 @@
+import csv
 import yfinance as yf
 
-WATCH_LIST = [
-    ("2330.TW","台積電"),
-    ("2317.TW","鴻海"),
-    ("2454.TW","聯發科"),
-    ("2303.TW","聯電"),
-    ("2382.TW","廣達"),
-    ("2324.TW","仁寶"),
-    ("2409.TW","友達"),
-    ("2603.TW","長榮"),
-    ("0050.TW","元大台灣50"),
-    ("00878.TW","國泰永續高股息"),
-]
+def load_symbols():
+    stocks=[]
+    with open("data/watch_symbols.csv",encoding="utf-8") as f:
+        for row in csv.reader(f):
+            if row:
+                stocks.append((row[0],row[1]))
+    return stocks
 
 def scan():
 
     result=[]
 
-    for symbol,name in WATCH_LIST:
+    for symbol,name in load_symbols():
 
         try:
 
@@ -26,40 +22,21 @@ def scan():
             if df.empty:
                 continue
 
-            close=round(float(df["Close"].iloc[-1]),2)
-
-            change=round(
-                (float(df["Close"].iloc[-1])-float(df["Close"].iloc[-2]))
-                /float(df["Close"].iloc[-2])*100
-            ,2)
-
-            volume=int(df["Volume"].iloc[-1])
+            close=float(df["Close"].iloc[-1])
+            prev=float(df["Close"].iloc[-2])
 
             result.append({
                 "symbol":symbol,
                 "name":name,
-                "price":close,
-                "change":change,
-                "volume":volume
+                "price":round(close,2),
+                "change":round((close-prev)/prev*100,2),
+                "volume":int(df["Volume"].iloc[-1])
             })
 
-        except Exception as e:
-
-            print(symbol,e)
+        except Exception:
+            pass
 
     return result
 
-
 if __name__=="__main__":
-
-    stocks=scan()
-
-    for s in stocks:
-
-        print(
-            s["symbol"],
-            s["name"],
-            s["price"],
-            s["change"],
-            s["volume"]
-        )
+    print(scan())
