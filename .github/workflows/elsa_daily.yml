@@ -1,0 +1,48 @@
+name: Elsa AI Daily Report
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  run-elsa-ai:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Elsa AI
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+        run: python elsa_ai.py
+
+      - name: Copy dashboard image
+        run: |
+          mkdir -p public
+          cp images/dashboard_*.png public/dashboard.png
+
+      - name: Commit dashboard image
+        run: |
+          git config user.name "Elsa AI Bot"
+          git config user.email "elsa-ai-bot@example.com"
+          git add public/dashboard.png
+          git commit -m "Update dashboard image" || echo "No changes"
+          git push
+
+      - name: Push dashboard image to LINE
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+        run: python send_public_dashboard_image.py
