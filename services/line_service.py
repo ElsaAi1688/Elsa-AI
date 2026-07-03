@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 load_dotenv()
 
 def send_line_message(message):
+    if os.getenv("DISABLE_LINE_PUSH") == "1":
+        print("🔕 LINE 文字推播已暫停")
+        return
     token = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 
     if not token:

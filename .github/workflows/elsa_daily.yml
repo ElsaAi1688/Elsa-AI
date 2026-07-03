@@ -32,26 +32,22 @@ jobs:
       - name: Generate report and images
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          DISABLE_LINE_PUSH: "1"
         run: |
           python multi_report.py
           python portfolio_image_report.py
           python manager_dashboard.py
-
-      - name: Copy dashboard image
-        run: |
-          mkdir -p public
-          ls images
           python prepare_line_image.py
 
-      - name: Commit dashboard image
-        run: |
-          git config user.name "Elsa AI Bot"
-          git config user.email "elsa-ai-bot@example.com"
-          git add public/dashboard.jpg
-          git commit -m "Update dashboard image" || echo "No changes"
-          git push
-
-      - name: Push dashboard image to LINE
+      - name: Send Morning Brief
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
-        run: python send_public_dashboard_image.py
+        run: python morning_brief.py
+
+      - name: Upload dashboard to Cloudinary and LINE
+        env:
+          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+        run: python send_dashboard_image.py
