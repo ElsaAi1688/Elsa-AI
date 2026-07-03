@@ -11,10 +11,25 @@ HEIGHT = 1920
 canvas = Image.new("RGB", (WIDTH, HEIGHT), (18, 20, 28))
 draw = ImageDraw.Draw(canvas)
 
-font = "/System/Library/Fonts/PingFang.ttc"
-title = ImageFont.truetype(font, 56)
-normal = ImageFont.truetype(font, 32)
-small = ImageFont.truetype(font, 24)
+font_candidates = [
+    "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+    "/System/Library/Fonts/PingFang.ttc",
+]
+
+font = None
+for f in font_candidates:
+    if Path(f).exists():
+        font = f
+        break
+
+if font:
+    title = ImageFont.truetype(font, 56)
+    normal = ImageFont.truetype(font, 32)
+    small = ImageFont.truetype(font, 24)
+else:
+    title = ImageFont.load_default()
+    normal = ImageFont.load_default()
+    small = ImageFont.load_default()
 
 portfolio = json.loads(Path("portfolio.json").read_text(encoding="utf-8"))
 holdings = portfolio.get("holdings", [])
@@ -38,7 +53,7 @@ for item in holdings:
         close = matched[-1].get("close", 0)
         total_profit += (close - buy_price) * shares
 
-draw.text((40, 35), "🤖 Elsa AI Dashboard v2", fill="white", font=title)
+draw.text((40, 35), "Elsa AI Dashboard v2", fill="white", font=title)
 draw.text((40, 105), today, fill=(170, 170, 170), font=small)
 
 draw.rounded_rectangle((40, 145, 1040, 265), radius=25, fill=(30, 34, 46))
