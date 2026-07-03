@@ -93,7 +93,7 @@ else:
 img = Image.new("RGB", (WIDTH, HEIGHT), (15, 17, 23))
 draw = ImageDraw.Draw(img)
 
-font_path = "/System/Library/Fonts/PingFang.ttc"
+font_path = "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc" if Path("/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc").exists() else "/System/Library/Fonts/PingFang.ttc"
 title_font = ImageFont.truetype(font_path, 60)
 big_font = ImageFont.truetype(font_path, 44)
 mid_font = ImageFont.truetype(font_path, 34)
