@@ -41,13 +41,13 @@ jobs:
         run: |
           mkdir -p public
           ls images
-          cp images/dashboard_*.png public/dashboard.png
+          python prepare_line_image.py
 
       - name: Commit dashboard image
         run: |
           git config user.name "Elsa AI Bot"
           git config user.email "elsa-ai-bot@example.com"
-          git add public/dashboard.png
+          git add public/dashboard.jpg
           git commit -m "Update dashboard image" || echo "No changes"
           git push
 
