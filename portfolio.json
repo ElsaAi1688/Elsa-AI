@@ -1,0 +1,46 @@
+{
+  "holdings": [
+    {
+      "symbol": "0050",
+      "name": "元大台灣50",
+      "strategy": "dca",
+      "shares": 28,
+      "buy_price": 107.55,
+      "start_date": "2026-06-03",
+      "dca_day": 13,
+      "dca_amount": 3000,
+      "remind_days_before": [5, 3, 1, 0]
+    },
+    {
+      "symbol": "2330",
+      "name": "台積電",
+      "strategy": "dca",
+      "shares": 2,
+      "buy_price": 2420,
+      "start_date": "2026-06-03",
+      "dca_day": 13,
+      "dca_amount": 5000,
+      "remind_days_before": [5, 3, 1, 0]
+    },
+    {
+      "symbol": "2324",
+      "name": "仁寶",
+      "strategy": "short",
+      "shares": 283,
+      "buy_price": 35.3,
+      "start_date": "2026-07-01"
+    }
+  ],
+  "watchlist": [
+    {
+      "symbol": "2409",
+      "name": "友達",
+      "strategy": "short_watch"
+    },
+    {
+      "symbol": "009816",
+      "name": "009816",
+      "strategy": "dca_watch"
+    }
+  ]
+}
