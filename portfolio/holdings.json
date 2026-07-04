@@ -1,0 +1,30 @@
+[
+  {
+    "symbol": "2330.TW",
+    "name": "台積電",
+    "shares": 2,
+    "cost": 2420,
+    "strategy": "long_term_dca",
+    "monthly_dca_day": 13,
+    "monthly_dca_amount": 5000,
+    "start_date": "2026-06-03"
+  },
+  {
+    "symbol": "0050.TW",
+    "name": "元大台灣50",
+    "shares": 28,
+    "cost": 107.55,
+    "strategy": "long_term_dca",
+    "monthly_dca_day": 13,
+    "monthly_dca_amount": 3000,
+    "start_date": "2026-06-03"
+  },
+  {
+    "symbol": "2324.TW",
+    "name": "仁寶",
+    "shares": 283,
+    "cost": 35.3,
+    "strategy": "short_term",
+    "buy_date": "2026-07-01"
+  }
+]
