@@ -2,13 +2,31 @@ name: Elsa AI Daily
 
 on:
   schedule:
-    # 台灣 07:20 = UTC 23:20 前一天：先更新 Core Brain
+    # 台灣 07:20 更新 Core
     - cron: "20 23 * * *"
-    # 台灣 07:30 = UTC 23:30 前一天：Morning Brief
+    # 台灣 07:30 晨報
     - cron: "30 23 * * *"
-    # 台灣 17:30 = UTC 09:30：收盤分析
+    # 台灣 17:30 收盤報
     - cron: "30 9 * * 1-5"
+
   workflow_dispatch:
+    inputs:
+      mode:
+        description: "選擇要執行的 Elsa 模式"
+        required: true
+        default: "morning"
+        type: choice
+        options:
+          - core
+          - morning
+          - close
+          - dashboard
+          - alert
+          - portfolio
+          - health
+          - teacher
+          - manager
+          - dca
 
 jobs:
   elsa-ai:
@@ -27,7 +45,7 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Elsa Core + Reports
+      - name: Run Elsa
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
@@ -35,5 +53,9 @@ jobs:
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         run: |
-          python elsa.py core
-          python elsa.py morning
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            python elsa.py "${{ github.event.inputs.mode }}"
+          else
+            python elsa.py core
+            python elsa.py morning
+          fi
