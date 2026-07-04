@@ -2,9 +2,11 @@ name: Elsa AI Daily
 
 on:
   schedule:
-    # 台灣 07:30 = UTC 23:30 前一天
+    # 台灣 07:20 = UTC 23:20 前一天：先更新 Core Brain
+    - cron: "20 23 * * *"
+    # 台灣 07:30 = UTC 23:30 前一天：Morning Brief
     - cron: "30 23 * * *"
-    # 台灣 17:30 = UTC 09:30
+    # 台灣 17:30 = UTC 09:30：收盤分析
     - cron: "30 9 * * 1-5"
   workflow_dispatch:
 
@@ -25,7 +27,7 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Run Elsa
+      - name: Run Elsa Core + Reports
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
           LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
@@ -33,4 +35,5 @@ jobs:
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
         run: |
+          python elsa.py core
           python elsa.py morning
