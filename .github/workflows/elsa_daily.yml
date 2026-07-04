@@ -1,53 +1,36 @@
-name: Elsa AI Daily Report
+name: Elsa AI Daily
 
 on:
-  workflow_dispatch:
   schedule:
-    - cron: "0 0 * * *"
-
-permissions:
-  contents: write
+    # 台灣 07:30 = UTC 23:30 前一天
+    - cron: "30 23 * * *"
+    # 台灣 17:30 = UTC 09:30
+    - cron: "30 9 * * 1-5"
+  workflow_dispatch:
 
 jobs:
-  run-elsa-ai:
+  elsa-ai:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Python
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install system fonts
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y fonts-noto-cjk
-
       - name: Install dependencies
-        run: pip install -r requirements.txt
-
-      - name: Generate report and images
-        env:
-          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
-          DISABLE_LINE_PUSH: "1"
         run: |
-          python multi_report.py
-          python portfolio_image_report.py
-          python manager_dashboard.py
-          python prepare_line_image.py
+          pip install -r requirements.txt
 
-      - name: Send Morning Brief
+      - name: Run Elsa
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
-        run: python morning_brief.py
-
-      - name: Upload dashboard to Cloudinary and LINE
-        env:
-          LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
+          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
-        run: python send_dashboard_image.py
+        run: |
+          python elsa.py morning
