@@ -2,13 +2,14 @@ import sys
 import subprocess
 
 MODES = {
-    "morning": "elsa_morning_v2_clean.py",
-    "close": "elsa_close_v2.py",
-    "dashboard": "elsa_rc1e.py",
+    "core": "elsa_core.py",
+    "morning": "elsa_morning_core.py",
+    "close": "elsa_close_core.py",
+    "dashboard": "elsa_dashboard_core.py",
+    "alert": "elsa_alert_core.py",
     "portfolio": "elsa_rc1a.py",
     "health": "elsa_rc1b.py",
     "teacher": "elsa_rc1f.py",
-    "alert": "elsa_build009.py",
     "manager": "elsa_build010.py",
     "dca": "elsa_rc1d.py",
 }
