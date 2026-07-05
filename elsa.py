@@ -2,6 +2,7 @@ import sys
 import subprocess
 
 MODES = {
+    "health": "elsa_health.py",
     "core": "elsa_core.py",
     "morning": "elsa_morning_core.py",
     "close": "elsa_close_core.py",
