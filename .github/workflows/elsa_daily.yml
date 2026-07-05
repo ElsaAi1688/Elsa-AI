@@ -15,6 +15,7 @@ on:
         default: "workspace"
         type: choice
         options:
+          - daily
           - health
           - core
           - workspace
@@ -54,7 +55,5 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             python elsa.py "${{ github.event.inputs.mode }}"
           else
-            python elsa.py health
-            python elsa.py core
-            python elsa.py workspace
+            python elsa.py daily
           fi
