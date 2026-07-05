@@ -23,6 +23,7 @@ on:
           - dashboard
           - alert
           - dca
+          - journal
 
 jobs:
   elsa-ai:
