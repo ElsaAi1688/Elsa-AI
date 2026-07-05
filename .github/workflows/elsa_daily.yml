@@ -2,27 +2,26 @@ name: Elsa AI Daily
 
 on:
   schedule:
+    # 台灣 07:30
     - cron: "30 23 * * *"
+    # 台灣 17:30
     - cron: "30 9 * * 1-5"
 
   workflow_dispatch:
     inputs:
       mode:
-        description: "選擇要執行的 Elsa 模式"
+        description: "選擇 Elsa 模式"
         required: true
-        default: "morning"
+        default: "workspace"
         type: choice
         options:
           - health
           - core
+          - workspace
           - morning
           - close
-          - workspace
           - dashboard
           - alert
-          - portfolio
-          - teacher
-          - manager
           - dca
 
 jobs:
@@ -46,7 +45,6 @@ jobs:
       - name: Run Elsa
         env:
           LINE_CHANNEL_ACCESS_TOKEN: ${{ secrets.LINE_CHANNEL_ACCESS_TOKEN }}
-          LINE_USER_ID: ${{ secrets.LINE_USER_ID }}
           CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
           CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
           CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
@@ -56,5 +54,5 @@ jobs:
           else
             python elsa.py health
             python elsa.py core
-            python elsa.py morning
+            python elsa.py workspace
           fi
