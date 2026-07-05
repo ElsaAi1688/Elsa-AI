@@ -10,6 +10,7 @@ MODES = {
     "alert": "elsa_manager_suite.py alert",
     "dca": "elsa_manager_suite.py dca",
     "journal": "elsa_journal_review.py",
+    "insight": "elsa_journal_insight.py",
     "workspace": "elsa_workspace.py",
     "dashboard": "elsa_dashboard_u1.py",
     "stockcard": "elsa_stock_cards_all.py",

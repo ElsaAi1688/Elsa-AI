@@ -24,6 +24,7 @@ on:
           - alert
           - dca
           - journal
+          - insight
 
 jobs:
   elsa-ai:
