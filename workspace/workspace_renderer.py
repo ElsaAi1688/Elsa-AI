@@ -1,4 +1,3 @@
-
 import sys
 from pathlib import Path
 from PIL import Image, ImageDraw, ImageFont
@@ -13,12 +12,24 @@ from services.line_service import send_line_image
 OUT = Path("reports/output")
 OUT.mkdir(parents=True, exist_ok=True)
 
-FONT="/System/Library/Fonts/PingFang.ttc"
-title=ImageFont.truetype(FONT,44)
-big=ImageFont.truetype(FONT,34)
-mid=ImageFont.truetype(FONT,23)
-small=ImageFont.truetype(FONT,18)
-tiny=ImageFont.truetype(FONT,15)
+def load_font(size):
+    candidates = [
+        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
+        "/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf",
+        "/System/Library/Fonts/PingFang.ttc",
+        "/System/Library/Fonts/STHeiti Light.ttc",
+    ]
+    for f in candidates:
+        if Path(f).exists():
+            return ImageFont.truetype(f, size)
+    return ImageFont.load_default()
+
+title=load_font(44)
+big=load_font(34)
+mid=load_font(23)
+small=load_font(18)
+tiny=load_font(15)
 
 img=Image.new("RGB",(1080,1920),"#050816")
 draw=ImageDraw.Draw(img)
