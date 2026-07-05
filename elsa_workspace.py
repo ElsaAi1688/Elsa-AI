@@ -1,10 +1,12 @@
 from workspace.workspace_engine import WorkspaceEngine
 from workspace.workspace_message import WorkspaceMessage
 from services.line_service import send_line_message
+from memory.investment_journal import InvestmentJournal
 import subprocess
 import sys
 
 data = WorkspaceEngine().build()
+InvestmentJournal().record_daily(data)
 msg = WorkspaceMessage().render(data)
 
 print(msg)
