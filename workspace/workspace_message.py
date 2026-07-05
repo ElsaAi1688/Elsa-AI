@@ -43,5 +43,8 @@ class WorkspaceMessage:
         lines.append("")
         lines.append("📌 Elsa 今日一句話")
         lines.append("今天先照紀律走，不追高，等待高勝率機會。")
+        lines.append("")
+        lines.append("🧠 投資習慣提醒")
+        lines.append("我會持續記錄每天的決策，幫妳看見自己的投資節奏。")
 
         return "\n".join(lines)

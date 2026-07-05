@@ -474,5 +474,243 @@
       }
     ],
     "lesson": "什麼叫突破？"
+  },
+  {
+    "date": "2026-07-05",
+    "time": "22:22:06",
+    "main_decision": "今天有長期加碼機會，但仍要分批。",
+    "portfolio_health": 61,
+    "portfolio_level": "普通",
+    "holdings": [
+      {
+        "symbol": "2330.TW",
+        "name": "台積電",
+        "action": "加碼",
+        "decision": "本月可考慮增加定期定額",
+        "confidence": 93,
+        "reasons": [
+          "AI 分數 80",
+          "突破率 87%",
+          "支撐 2249.0",
+          "壓力 2510.0"
+        ],
+        "confidence_reasons": [
+          "AI 分數偏強",
+          "突破率高",
+          "屬於長期定投，短線波動影響較小"
+        ]
+      },
+      {
+        "symbol": "0050.TW",
+        "name": "元大台灣50",
+        "action": "持續",
+        "decision": "維持原本定期定額",
+        "confidence": 83,
+        "reasons": [
+          "AI 分數 69",
+          "突破率 76%",
+          "支撐 99.85",
+          "壓力 111.15"
+        ],
+        "confidence_reasons": [
+          "AI 分數穩健",
+          "突破率高",
+          "屬於長期定投，短線波動影響較小"
+        ]
+      },
+      {
+        "symbol": "2324.TW",
+        "name": "仁寶",
+        "action": "等待",
+        "decision": "尚未突破壓力，不追高",
+        "confidence": 45,
+        "reasons": [
+          "AI 分數 56",
+          "突破率 42%",
+          "支撐 34.2",
+          "壓力 41.4"
+        ],
+        "confidence_reasons": [
+          "AI 分數偏弱",
+          "突破率不足",
+          "短線風險尚可控",
+          "等待可以降低追高風險"
+        ]
+      }
+    ],
+    "top5": [
+      {
+        "symbol": "1708.TW",
+        "name": "東鹼",
+        "price": 60.7,
+        "ai_score": 88,
+        "technical_score": 100,
+        "fundamental_score": 100,
+        "chip_score": 96,
+        "news_score": 50,
+        "support": 44.2,
+        "resistance": 60.7,
+        "target_price": 62.52,
+        "stop_loss": 43.32,
+        "breakout_probability": 95,
+        "recommendation": "觀察",
+        "reasons": [
+          "股價站上 MA5，短線轉強",
+          "股價站上 MA20，中期趨勢偏多",
+          "股價站上 MA60，季線支撐偏強",
+          "MA5 上穿 MA20，短線均線轉強",
+          "MACD 偏多",
+          "RSI 過熱，短線需留意拉回",
+          "KD 指標偏多",
+          "成交量明顯放大",
+          "本益比合理",
+          "ROE 良好",
+          "毛利率良好",
+          "營益率良好",
+          "殖利率佳",
+          "EPS 為正，具備獲利能力",
+          "成交量明顯放大，市場關注度提高",
+          "近 5 日股價轉強",
+          "量價同步偏多"
+        ]
+      },
+      {
+        "symbol": "1446.TW",
+        "name": "宏和",
+        "price": 17.7,
+        "ai_score": 87,
+        "technical_score": 100,
+        "fundamental_score": 97,
+        "chip_score": 96,
+        "news_score": 50,
+        "support": 16.3,
+        "resistance": 17.7,
+        "target_price": 18.23,
+        "stop_loss": 15.97,
+        "breakout_probability": 95,
+        "recommendation": "觀察",
+        "reasons": [
+          "股價站上 MA5，短線轉強",
+          "股價站上 MA20，中期趨勢偏多",
+          "股價站上 MA60，季線支撐偏強",
+          "MA5 上穿 MA20，短線均線轉強",
+          "MACD 偏多",
+          "RSI 過熱，短線需留意拉回",
+          "KD 指標偏多",
+          "成交量明顯放大",
+          "本益比偏低，評價相對便宜",
+          "毛利率良好",
+          "營益率良好",
+          "殖利率佳",
+          "EPS 為正，具備獲利能力",
+          "成交量明顯放大，市場關注度提高",
+          "近 5 日股價轉強",
+          "量價同步偏多"
+        ]
+      },
+      {
+        "symbol": "1232.TW",
+        "name": "大統益",
+        "price": 146.5,
+        "ai_score": 86,
+        "technical_score": 100,
+        "fundamental_score": 100,
+        "chip_score": 88,
+        "news_score": 50,
+        "support": 140.5,
+        "resistance": 146.5,
+        "target_price": 150.9,
+        "stop_loss": 137.69,
+        "breakout_probability": 95,
+        "recommendation": "觀察",
+        "reasons": [
+          "股價站上 MA5，短線轉強",
+          "股價站上 MA20，中期趨勢偏多",
+          "股價站上 MA60，季線支撐偏強",
+          "MA5 上穿 MA20，短線均線轉強",
+          "MACD 偏多",
+          "RSI 位於健康區間",
+          "KD 指標偏多",
+          "成交量明顯放大",
+          "本益比合理",
+          "ROE 優秀，獲利能力強",
+          "ROA 表現良好",
+          "殖利率佳",
+          "EPS 為正，具備獲利能力",
+          "成交量明顯放大，市場關注度提高",
+          "近 5 日短線偏多",
+          "量價同步偏多"
+        ]
+      },
+      {
+        "symbol": "1459.TW",
+        "name": "聯發",
+        "price": 12.0,
+        "ai_score": 86,
+        "technical_score": 100,
+        "fundamental_score": 99,
+        "chip_score": 88,
+        "news_score": 50,
+        "support": 11.5,
+        "resistance": 12.0,
+        "target_price": 12.36,
+        "stop_loss": 11.27,
+        "breakout_probability": 95,
+        "recommendation": "觀察",
+        "reasons": [
+          "股價站上 MA5，短線轉強",
+          "股價站上 MA20，中期趨勢偏多",
+          "股價站上 MA60，季線支撐偏強",
+          "MA5 上穿 MA20，短線均線轉強",
+          "MACD 偏多",
+          "RSI 位於健康區間",
+          "KD 指標偏多",
+          "成交量明顯放大",
+          "本益比偏低，評價相對便宜",
+          "ROE 良好",
+          "營益率良好",
+          "殖利率佳",
+          "EPS 為正，具備獲利能力",
+          "成交量明顯放大，市場關注度提高",
+          "近 5 日短線偏多",
+          "量價同步偏多"
+        ]
+      },
+      {
+        "symbol": "1442.TW",
+        "name": "名軒",
+        "price": 28.5,
+        "ai_score": 85,
+        "technical_score": 100,
+        "fundamental_score": 97,
+        "chip_score": 88,
+        "news_score": 50,
+        "support": 26.5,
+        "resistance": 28.5,
+        "target_price": 29.36,
+        "stop_loss": 25.97,
+        "breakout_probability": 95,
+        "recommendation": "觀察",
+        "reasons": [
+          "股價站上 MA5，短線轉強",
+          "股價站上 MA20，中期趨勢偏多",
+          "股價站上 MA60，季線支撐偏強",
+          "MA5 上穿 MA20，短線均線轉強",
+          "MACD 偏多",
+          "RSI 位於健康區間",
+          "KD 指標偏多",
+          "成交量高於平均",
+          "本益比偏低，評價相對便宜",
+          "毛利率良好",
+          "營益率良好",
+          "殖利率佳",
+          "EPS 為正，具備獲利能力",
+          "成交量高於近期平均",
+          "近 5 日股價轉強",
+          "量價同步偏多"
+        ]
+      }
+    ],
+    "lesson": "什麼叫突破？"
   }
 ]
