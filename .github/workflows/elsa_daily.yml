@@ -17,6 +17,7 @@ on:
           - core
           - morning
           - close
+          - workspace
           - dashboard
           - alert
           - portfolio
