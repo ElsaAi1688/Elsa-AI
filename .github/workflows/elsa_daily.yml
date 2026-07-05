@@ -24,6 +24,7 @@ on:
           - dashboard
           - alert
           - liveexit
+          - watchdog
           - dca
           - journal
           - insight
