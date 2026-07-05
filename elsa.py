@@ -8,6 +8,7 @@ MODES = {
     "morning": "elsa_manager_suite.py morning",
     "close": "elsa_manager_suite.py close",
     "alert": "elsa_manager_suite.py alert",
+    "liveexit": "elsa_live_exit_alert.py",
     "dca": "elsa_manager_suite.py dca",
     "journal": "elsa_journal_review.py",
     "insight": "elsa_journal_insight.py",

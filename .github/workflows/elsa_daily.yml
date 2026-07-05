@@ -23,6 +23,7 @@ on:
           - close
           - dashboard
           - alert
+          - liveexit
           - dca
           - journal
           - insight
