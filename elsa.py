@@ -1,31 +1,26 @@
+
 import sys
 import subprocess
 
 MODES = {
     "health": "elsa_health.py",
     "core": "elsa_core.py",
-    "morning": "elsa_morning_core.py",
-    "close": "elsa_close_core.py",
-    "dashboard": "elsa_dashboard_core.py",
-    "alert": "elsa_alert_core.py",
-    "portfolio": "elsa_rc1a.py",
-    "health": "elsa_rc1b.py",
-    "teacher": "elsa_rc1f.py",
-    "manager": "elsa_build010.py",
-    "dca": "elsa_rc1d.py",
+    "morning": "elsa_manager_suite.py morning",
+    "close": "elsa_manager_suite.py close",
+    "alert": "elsa_manager_suite.py alert",
+    "dca": "elsa_manager_suite.py dca",
+    "dashboard": "elsa_dashboard_u1.py",
+    "stockcard": "elsa_stock_cards_all.py",
 }
-
-def run(mode):
-    script = MODES.get(mode)
-
-    if not script:
-        print("可用模式：")
-        for k in MODES:
-            print("-", k)
-        return
-
-    subprocess.run([sys.executable, script], check=True)
 
 if __name__ == "__main__":
     mode = sys.argv[1] if len(sys.argv) > 1 else "morning"
-    run(mode)
+    cmd = MODES.get(mode)
+
+    if not cmd:
+        print("可用模式：")
+        for k in MODES:
+            print("-", k)
+        sys.exit()
+
+    subprocess.run([sys.executable] + cmd.split(), check=True)
