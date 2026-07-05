@@ -2,11 +2,7 @@ name: Elsa AI Daily
 
 on:
   schedule:
-    # 台灣 07:20 更新 Core
-    - cron: "20 23 * * *"
-    # 台灣 07:30 晨報
     - cron: "30 23 * * *"
-    # 台灣 17:30 收盤報
     - cron: "30 9 * * 1-5"
 
   workflow_dispatch:
@@ -17,13 +13,13 @@ on:
         default: "morning"
         type: choice
         options:
+          - health
           - core
           - morning
           - close
           - dashboard
           - alert
           - portfolio
-          - health
           - teacher
           - manager
           - dca
@@ -33,17 +29,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+      - run: pip install -r requirements.txt
 
       - name: Run Elsa
         env:
@@ -56,6 +48,7 @@ jobs:
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             python elsa.py "${{ github.event.inputs.mode }}"
           else
+            python elsa.py health
             python elsa.py core
             python elsa.py morning
           fi
