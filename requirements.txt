@@ -4,3 +4,4 @@ matplotlib
 requests
 python-dotenv
 curl_cffi
+cloudinary
