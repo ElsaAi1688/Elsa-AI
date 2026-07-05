@@ -1,3 +1,5 @@
+from decision.confidence_engine import ConfidenceEngine
+
 class ElsaDecisionEngine:
 
     def decide_stock(self, stock):
@@ -56,13 +58,16 @@ class ElsaDecisionEngine:
         if resistance:
             reasons.append(f"壓力 {resistance}")
 
+        confidence_data = ConfidenceEngine().explain(stock, action)
+
         return {
             "symbol": stock["symbol"],
             "name": stock["name"],
             "action": action,
             "decision": decision,
-            "confidence": confidence,
-            "reasons": reasons
+            "confidence": confidence_data["confidence"],
+            "reasons": reasons,
+            "confidence_reasons": confidence_data["confidence_reasons"]
         }
 
     def decide_portfolio(self, portfolio):
