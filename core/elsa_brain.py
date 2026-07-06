@@ -2,6 +2,7 @@
 import json
 from pathlib import Path
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from scanner.market_cache import save_market_scan, load_market_scan
 from portfolio.portfolio_center import PortfolioCenter
@@ -29,7 +30,7 @@ class ElsaBrain:
         market_score = round(sum(s["ai_score"] for s in top10) / len(top10)) if top10 else 0
 
         brain = {
-            "updated_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            "updated_at": datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d %H:%M:%S"),
             "market": {
                 "score": market_score,
                 "count": market["count"],

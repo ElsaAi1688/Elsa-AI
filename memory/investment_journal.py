@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 JOURNAL = Path("memory/investment_journal.json")
 JOURNAL.parent.mkdir(exist_ok=True)
@@ -22,8 +23,8 @@ class InvestmentJournal:
         records = self.load()
 
         item = {
-            "date": datetime.now().strftime("%Y-%m-%d"),
-            "time": datetime.now().strftime("%H:%M:%S"),
+            "date": datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d"),
+            "time": datetime.now(ZoneInfo("Asia/Taipei")).strftime("%H:%M:%S"),
             "main_decision": workspace_data["decision"]["main_message"],
             "portfolio_health": workspace_data["health"]["score"],
             "portfolio_level": workspace_data["health"]["level"],
