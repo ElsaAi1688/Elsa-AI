@@ -5,3 +5,6 @@ requests
 python-dotenv
 curl_cffi
 cloudinary
+
+flask
+gunicorn
