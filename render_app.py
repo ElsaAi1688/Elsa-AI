@@ -21,9 +21,10 @@ def watch_auo():
         text=True
     )
 
+    ok = result.returncode == 0
+
     return jsonify({
-        "status": "ok" if result.returncode == 0 else "error",
-        "stdout": result.stdout[-3000:],
-        "stderr": result.stderr[-3000:],
+        "status": "ok" if ok else "error",
+        "message": "AUO watch executed",
         "time": datetime.now(ZoneInfo("Asia/Taipei")).strftime("%Y-%m-%d %H:%M:%S")
     })
