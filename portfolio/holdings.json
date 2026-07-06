@@ -20,11 +20,11 @@
     "start_date": "2026-06-03"
   },
   {
-    "symbol": "2324.TW",
-    "name": "仁寶",
-    "shares": 283,
-    "cost": 35.3,
-    "strategy": "short_term",
-    "buy_date": "2026-07-01"
+    "symbol": "2409.TW",
+    "name": "友達",
+    "shares": 0,
+    "cost": 0,
+    "strategy": "short_entry_watch",
+    "note": "等待短線進場"
   }
 ]
