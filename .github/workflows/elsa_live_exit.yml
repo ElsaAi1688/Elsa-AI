@@ -2,6 +2,8 @@ name: Elsa Watchdog Alert
 
 on:
   schedule:
+    # 測試用：每10分鐘跑一次
+    - cron: "*/10 * * * *"
     # 台灣 08:50 開盤前提醒
     - cron: "50 0 * * 1-5"
     # 台股盤中每小時巡邏：09:00~13:00
