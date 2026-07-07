@@ -64,12 +64,9 @@ decision = EntryDecisionEngine().evaluate({
     "price": price,
     "support": support,
     "resistance": resistance,
-    "ai": ai,
-    "breakout": breakout,
-    "ma5": technical["ma5"],
-    "ma20": technical["ma20"],
-    "volume": technical["volume"],
-    "avg_volume": technical["avg_volume"]
+    "technical_score": technical["score"],
+    "fundamental_score": fundamental["score"],
+    "chip_score": chip["score"]
 })
 
 signal = decision["action"]
