@@ -35,6 +35,31 @@ class TechnicalEngine:
             score -= 15
             reasons.append("跌破 MA60")
 
+        low9 = df["min"].rolling(9).min()
+        high9 = df["max"].rolling(9).max()
+        rsv = (close - low9) / (high9 - low9) * 100
+        k = rsv.ewm(com=2).mean()
+        d = k.ewm(com=2).mean()
+
+        k_now = float(k.iloc[-1])
+        d_now = float(d.iloc[-1])
+        k_prev = float(k.iloc[-2])
+        d_prev = float(d.iloc[-2])
+
+        if k_prev < d_prev and k_now > d_now:
+            score += 15
+            reasons.append("KD 黃金交叉")
+        elif k_prev > d_prev and k_now < d_now:
+            score -= 15
+            reasons.append("KD 死亡交叉")
+
+        if k_now < 20:
+            score += 8
+            reasons.append("KD 低檔區")
+        elif k_now > 80:
+            score -= 8
+            reasons.append("KD 高檔過熱")
+
         return {
             "score": max(0, min(round(score), 100)),
             "price": round(price, 2),
@@ -42,5 +67,7 @@ class TechnicalEngine:
             "ma10": round(ma10, 2),
             "ma20": round(ma20, 2),
             "ma60": round(ma60, 2),
+            "k": round(k_now, 2),
+            "d": round(d_now, 2),
             "reasons": reasons
         }
