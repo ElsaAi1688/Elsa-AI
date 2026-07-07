@@ -60,6 +60,31 @@ class TechnicalEngine:
             score -= 8
             reasons.append("KD 高檔過熱")
 
+        ema12 = close.ewm(span=12, adjust=False).mean()
+        ema26 = close.ewm(span=26, adjust=False).mean()
+        macd = ema12 - ema26
+        signal_line = macd.ewm(span=9, adjust=False).mean()
+        hist = macd - signal_line
+
+        macd_now = float(macd.iloc[-1])
+        signal_now = float(signal_line.iloc[-1])
+        hist_now = float(hist.iloc[-1])
+        hist_prev = float(hist.iloc[-2])
+
+        if macd_now > signal_now and hist_now > 0:
+            score += 15
+            reasons.append("MACD 翻紅")
+        elif macd_now < signal_now and hist_now < 0:
+            score -= 15
+            reasons.append("MACD 翻黑")
+
+        if hist_now > hist_prev:
+            score += 8
+            reasons.append("MACD 柱體增加")
+        else:
+            score -= 5
+            reasons.append("MACD 柱體縮小")
+
         return {
             "score": max(0, min(round(score), 100)),
             "price": round(price, 2),
@@ -69,5 +94,8 @@ class TechnicalEngine:
             "ma60": round(ma60, 2),
             "k": round(k_now, 2),
             "d": round(d_now, 2),
+            "macd": round(macd_now, 4),
+            "macd_signal": round(signal_now, 4),
+            "macd_hist": round(hist_now, 4),
             "reasons": reasons
         }
