@@ -42,3 +42,17 @@ def watch_auo():
         "message": "AUO watch executed during market hours",
         "time": now.strftime("%Y-%m-%d %H:%M:%S")
     })
+
+
+@app.get("/watch-auo-test")
+def watch_auo_test():
+    result = subprocess.run(
+        [sys.executable, "elsa_auo_entry_watch.py"],
+        capture_output=True,
+        text=True
+    )
+    return jsonify({
+        "status": "ok" if result.returncode == 0 else "error",
+        "message": "AUO test executed",
+        "time": datetime.now(TW).strftime("%Y-%m-%d %H:%M:%S")
+    })
