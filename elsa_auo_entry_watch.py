@@ -5,8 +5,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from services.line_service import send_line_message
-from market_data.twse_realtime import TWSERealtime
 from market_data.realtime_price import RealtimePrice
+from decision_v2.entry_decision_engine import EntryDecisionEngine
 
 STATE = Path("/tmp/elsa_auo_state.json")
 TW = ZoneInfo("Asia/Taipei")
@@ -52,6 +52,7 @@ try:
     print(f"即時價來源：{rt.get('source')}｜價格：{price}")
 except Exception as e:
     print("即時價失敗，使用 FinMind 價格：", e)
+
 volume = float(df["Trading_Volume"].iloc[-1])
 avg_volume = float(df["Trading_Volume"].tail(20).mean())
 
@@ -63,43 +64,33 @@ ma20 = float(df["close"].tail(20).mean())
 
 ai = 50
 breakout = 50
-reasons = []
 
 if price > ma5:
     ai += 10
-    reasons.append("股價站上 MA5")
 if price > ma20:
     ai += 10
-    reasons.append("股價站上 MA20")
 if ma5 > ma20:
     ai += 10
-    reasons.append("MA5 高於 MA20")
 if volume > avg_volume * 1.2:
     ai += 10
-    reasons.append("成交量放大")
 if price >= resistance:
     breakout += 30
-    reasons.append("股價突破壓力")
 elif price >= resistance * 0.98:
     breakout += 15
-    reasons.append("接近壓力區")
 
-signal = "WAIT"
-title = "🟢 Elsa 友達巡邏回報"
-decision = "目前尚未達到進場條件，先等待。"
+entry_decision = EntryDecisionEngine().evaluate({
+    "price": price,
+    "support": support,
+    "resistance": resistance,
+    "ai": ai,
+    "breakout": breakout,
+    "ma5": ma5,
+    "ma20": ma20,
+    "volume": volume,
+    "avg_volume": avg_volume
+})
 
-if price >= resistance and ai >= 70 and breakout >= 75:
-    signal = "ENTRY"
-    title = "🚀 Elsa 友達進場提醒"
-    decision = "友達已突破壓力且技術條件轉強，可列入第一筆布局觀察。"
-elif price <= support * 1.02 and ai >= 60:
-    signal = "OBSERVE_SUPPORT"
-    title = "🟡 Elsa 友達支撐觀察"
-    decision = "友達接近支撐區，可以觀察是否止穩，但還不是直接追進。"
-elif price >= resistance * 0.98 and price < resistance:
-    signal = "NO_CHASE"
-    title = "🔴 Elsa 友達不追高提醒"
-    decision = "友達接近壓力但尚未突破，不建議追高。"
+signal = entry_decision["action"]
 
 state = load_state()
 last_signal = state.get("signal")
@@ -118,7 +109,7 @@ else:
 
 if should_send:
     lines = []
-    lines.append(title)
+    lines.append("🧠 Elsa Decision Engine v2｜友達")
     lines.append("=" * 30)
     lines.append(f"時間：{now.strftime('%Y-%m-%d %H:%M:%S')}")
     lines.append(f"現價：{price}")
@@ -127,15 +118,17 @@ if should_send:
     lines.append(f"支撐：{support}")
     lines.append(f"壓力：{resistance}")
     lines.append("")
-    lines.append("👩‍💼 Elsa 判斷")
-    lines.append(decision)
+    lines.append("👩‍💼 Elsa 決策")
+    lines.append(f"建議：{entry_decision['action']}")
+    lines.append(f"勝率分數：{entry_decision['score']}/100｜{entry_decision['level']}")
+    lines.append(f"建議進場區間：{entry_decision['entry_low']}～{entry_decision['entry_high']}")
+    lines.append(f"停損：{entry_decision['stop_loss']}")
+    lines.append(f"目標一：{entry_decision['target1']}")
+    lines.append(f"目標二：{entry_decision['target2']}")
     lines.append("")
-    lines.append("技術理由：")
-    if reasons:
-        for x in reasons:
-            lines.append(f"・{x}")
-    else:
-        lines.append("・目前技術條件尚未明顯轉強")
+    lines.append("判斷理由：")
+    for x in entry_decision["reasons"]:
+        lines.append(f"・{x}")
     lines.append("")
     lines.append("莎莎，我會繼續每 5 分鐘巡邏，有高勝率訊號再通知妳。")
 
@@ -149,4 +142,5 @@ if should_send:
         "price": price
     })
 else:
-    print(f"友達巡邏完成，不重複通知｜{signal}｜現價 {price}｜AI {ai}｜突破率 {breakout}")
+    print(f"友達巡邏完成，不重複通知｜{signal}｜現價 {price}")
+
