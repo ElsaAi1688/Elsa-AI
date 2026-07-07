@@ -6,6 +6,7 @@ from services.line_service import send_line_message
 from market_data.realtime_price import RealtimePrice
 from engine.technical_engine import TechnicalEngine
 from engine.fundamental_engine import FundamentalEngine
+from engine.chip_engine import ChipEngine
 from decision_v2.entry_decision_engine import EntryDecisionEngine
 
 STATE = Path("/tmp/elsa_auo_state.json")
@@ -50,8 +51,9 @@ resistance = round(float(df["max"].tail(20).max()), 2)
 
 technical = TechnicalEngine().analyze(df)
 fundamental = FundamentalEngine().analyze(STOCK_ID)
+chip = ChipEngine().analyze(STOCK_ID)
 
-ai = round(technical["score"] * 0.7 + fundamental["score"] * 0.3)
+ai = round(technical["score"] * 0.55 + fundamental["score"] * 0.25 + chip["score"] * 0.20)
 breakout = 50
 if price >= resistance:
     breakout += 30
@@ -103,6 +105,13 @@ if should_send:
     lines.append("📊 基本面拆解")
     lines.append(f"基本面分數：{fundamental['score']}/100")
     for item in fundamental["explain"]:
+        sign = "+" if item["points"] > 0 else ""
+        lines.append(f"・{item['name']}｜{item['status']}｜{sign}{item['points']}分")
+        lines.append(f"  {item['reason']}")
+    lines.append("")
+    lines.append("💰 籌碼拆解")
+    lines.append(f"籌碼分數：{chip['score']}/100")
+    for item in chip["explain"]:
         sign = "+" if item["points"] > 0 else ""
         lines.append(f"・{item['name']}｜{item['status']}｜{sign}{item['points']}分")
         lines.append(f"  {item['reason']}")
