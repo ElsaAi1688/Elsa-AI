@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from services.line_service import send_line_message
 from market_data.twse_realtime import TWSERealtime
+from market_data.realtime_price import RealtimePrice
 
 STATE = Path("/tmp/elsa_auo_state.json")
 TW = ZoneInfo("Asia/Taipei")
@@ -46,13 +47,11 @@ df = pd.DataFrame(data["data"]).sort_values("date")
 price = round(float(df["close"].iloc[-1]), 2)
 
 try:
-    rt = TWSERealtime().get_price(STOCK_ID)
+    rt = RealtimePrice().get_tw_stock_price(STOCK_ID)
     price = round(float(rt["price"]), 2)
-    print(f"TWSE 即時價：{price}")
-    if rt.get("time") and rt["price"] == rt.get("yesterday_close", None):
-        print("⚠️ 資料價格疑似延遲，暫不做進場決策")
+    print(f"即時價來源：{rt.get('source')}｜價格：{price}")
 except Exception as e:
-    print("TWSE 即時價失敗，使用 FinMind 價格：", e)
+    print("即時價失敗，使用 FinMind 價格：", e)
 volume = float(df["Trading_Volume"].iloc[-1])
 avg_volume = float(df["Trading_Volume"].tail(20).mean())
 
