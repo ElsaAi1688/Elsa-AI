@@ -1,13 +1,28 @@
+import json
 import requests
 import pandas as pd
+from pathlib import Path
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 from services.line_service import send_line_message
+
+STATE = Path("/tmp/elsa_auo_state.json")
+TW = ZoneInfo("Asia/Taipei")
 
 STOCK_ID = "2409"
 NAME = "友達"
 
-end = datetime.now().strftime("%Y-%m-%d")
-start = (datetime.now() - timedelta(days=90)).strftime("%Y-%m-%d")
+def load_state():
+    if STATE.exists():
+        return json.loads(STATE.read_text(encoding="utf-8"))
+    return {}
+
+def save_state(data):
+    STATE.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+
+now = datetime.now(TW)
+end = now.strftime("%Y-%m-%d")
+start = (now - timedelta(days=90)).strftime("%Y-%m-%d")
 
 url = "https://api.finmindtrade.com/api/v4/data"
 params = {
@@ -21,12 +36,11 @@ r = requests.get(url, params=params, timeout=20)
 data = r.json()
 
 if "data" not in data or not data["data"]:
-    print("FinMind 友達資料抓取失敗，暫不通知")
+    print("FinMind 友達資料抓取失敗")
     print(data)
     exit()
 
-df = pd.DataFrame(data["data"])
-df = df.sort_values("date")
+df = pd.DataFrame(data["data"]).sort_values("date")
 
 price = round(float(df["close"].iloc[-1]), 2)
 volume = float(df["Trading_Volume"].iloc[-1])
@@ -61,35 +75,69 @@ elif price >= resistance * 0.98:
     breakout += 15
     reasons.append("接近壓力區")
 
-alerts = []
+signal = "WAIT"
+title = "🟢 Elsa 友達巡邏回報"
+decision = "目前尚未達到進場條件，先等待。"
 
 if price >= resistance and ai >= 70 and breakout >= 75:
-    alerts.append("🚀 可進場觀察：突破壓力且技術條件轉強")
+    signal = "ENTRY"
+    title = "🚀 Elsa 友達進場提醒"
+    decision = "友達已突破壓力且技術條件轉強，可列入第一筆布局觀察。"
 elif price <= support * 1.02 and ai >= 60:
-    alerts.append("🟢 可觀察：接近支撐區，等待止穩")
+    signal = "OBSERVE_SUPPORT"
+    title = "🟡 Elsa 友達支撐觀察"
+    decision = "友達接近支撐區，可以觀察是否止穩，但還不是直接追進。"
 elif price >= resistance * 0.98 and price < resistance:
-    alerts.append("🔴 不追高：接近壓力但尚未突破")
+    signal = "NO_CHASE"
+    title = "🔴 Elsa 友達不追高提醒"
+    decision = "友達接近壓力但尚未突破，不建議追高。"
 
-if alerts:
-    msg = ["🚨 Elsa 友達進場監控｜FinMind版", "=" * 30]
-    msg.append(f"現價：{price}")
-    msg.append(f"AI：{ai}")
-    msg.append(f"突破率：{breakout}%")
-    msg.append(f"支撐：{support}")
-    msg.append(f"壓力：{resistance}")
-    msg.append("")
-    msg.append("觸發條件：")
-    for a in alerts:
-        msg.append(f"・{a}")
-    msg.append("")
-    msg.append("技術理由：")
-    for r in reasons:
-        msg.append(f"・{r}")
-    msg.append("")
-    msg.append("👩‍💼 Elsa：莎莎，友達目前只做進場觀察，不追高，等確認。")
-    final = "\n".join(msg)
-    print(final)
-    send_line_message(final)
+state = load_state()
+last_signal = state.get("signal")
+last_sent = state.get("last_sent")
+
+should_send = False
+
+if signal != last_signal:
+    should_send = True
+elif not last_sent:
+    should_send = True
 else:
-    print(f"友達未達進場條件｜現價 {price}｜支撐 {support}｜壓力 {resistance}｜AI {ai}｜突破率 {breakout}")
+    last_time = datetime.fromisoformat(last_sent)
+    if (now - last_time).total_seconds() >= 1800:
+        should_send = True
 
+if should_send:
+    lines = []
+    lines.append(title)
+    lines.append("=" * 30)
+    lines.append(f"時間：{now.strftime('%Y-%m-%d %H:%M:%S')}")
+    lines.append(f"現價：{price}")
+    lines.append(f"AI：{ai}")
+    lines.append(f"突破率：{breakout}%")
+    lines.append(f"支撐：{support}")
+    lines.append(f"壓力：{resistance}")
+    lines.append("")
+    lines.append("👩‍💼 Elsa 判斷")
+    lines.append(decision)
+    lines.append("")
+    lines.append("技術理由：")
+    if reasons:
+        for x in reasons:
+            lines.append(f"・{x}")
+    else:
+        lines.append("・目前技術條件尚未明顯轉強")
+    lines.append("")
+    lines.append("莎莎，我會繼續每 5 分鐘巡邏，有高勝率訊號再通知妳。")
+
+    msg = "\n".join(lines)
+    print(msg)
+    send_line_message(msg)
+
+    save_state({
+        "signal": signal,
+        "last_sent": now.isoformat(),
+        "price": price
+    })
+else:
+    print(f"友達巡邏完成，不重複通知｜{signal}｜現價 {price}｜AI {ai}｜突破率 {breakout}")
