@@ -150,6 +150,7 @@ if should_send:
     lines.append("")
     lines.append("💰 籌碼拆解")
     lines.append(f"籌碼分數：{chip['score']}/100")
+    lines.append(f"統計期間：{chip.get('period', '未提供')}")
     for item in chip["explain"]:
         sign = "+" if item["points"] > 0 else ""
         lines.append(f"・{item['name']}｜{item['status']}｜{sign}{item['points']}分")
