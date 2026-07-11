@@ -46,12 +46,54 @@ except Exception as e:
     price = round(float(df["close"].iloc[-1]), 2)
     print("即時價失敗，使用 FinMind：", e)
 
-support = round(float(df["min"].tail(20).min()), 2)
-resistance = round(float(df["max"].tail(20).max()), 2)
-
 technical = TechnicalEngine().analyze(df)
 fundamental = FundamentalEngine().analyze(STOCK_ID)
 chip = ChipEngine().analyze(STOCK_ID)
+
+# 短線有效支撐：選擇低於現價、且距離現價最近的技術位置
+support_candidates = [
+    float(df["min"].tail(3).min()),
+    float(df["min"].tail(5).min()),
+    float(df["min"].tail(10).min()),
+    float(technical["ma5"]),
+    float(technical["ma20"]),
+    float(technical["boll_lower"]),
+]
+
+support_candidates = [
+    value for value in support_candidates
+    if value > 0 and price * 0.85 <= value <= price
+]
+
+support = (
+    round(max(support_candidates), 2)
+    if support_candidates
+    else round(price * 0.97, 2)
+)
+
+# 短線有效壓力：選擇高於現價、且距離現價最近的位置
+resistance_candidates = [
+    float(df["max"].tail(3).max()),
+    float(df["max"].tail(5).max()),
+    float(df["max"].tail(10).max()),
+    float(technical["boll_upper"]),
+]
+
+resistance_candidates = [
+    value for value in resistance_candidates
+    if price <= value <= price * 1.20
+]
+
+resistance = (
+    round(min(resistance_candidates), 2)
+    if resistance_candidates
+    else round(price * 1.05, 2)
+)
+
+print(
+    f"短線支撐={support}｜短線壓力={resistance}",
+    flush=True,
+)
 
 ai = round(technical["score"] * 0.55 + fundamental["score"] * 0.25 + chip["score"] * 0.20)
 breakout = 50
