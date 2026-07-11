@@ -44,8 +44,12 @@ class EntryDecisionEngine:
         entry_low = round(support, 2)
         entry_high = round(min(price, support * 1.02), 2)
         stop_loss = round(support * 0.97, 2)
-        target1 = round(price * 1.05, 2)
-        target2 = round(price * 1.10, 2)
+        # 目標一優先採最近有效壓力
+        target1 = round(resistance, 2)
+
+        # 目標二採 2 倍風險報酬，但至少高於目標一
+        risk = max(price - stop_loss, price * 0.02)
+        target2 = round(max(target1 * 1.03, price + risk * 2), 2)
 
         if score >= 80:
             action = "可第一筆布局"
