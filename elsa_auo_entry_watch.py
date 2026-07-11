@@ -8,6 +8,7 @@ from engine.technical_engine import TechnicalEngine
 from engine.fundamental_engine import FundamentalEngine
 from engine.chip_engine import ChipEngine
 from engine.explain_engine import ExplainEngine
+from engine.scenario_engine import ScenarioEngine
 from decision_v2.entry_decision_engine import EntryDecisionEngine
 
 STATE = Path("/tmp/elsa_auo_state.json")
@@ -118,6 +119,16 @@ explain_summary = ExplainEngine().summarize(
     chip
 )
 
+macd_scenario = ScenarioEngine().simulate_macd_bullish(
+    technical=technical,
+    fundamental=fundamental,
+    chip=chip,
+    price=price,
+    support=support,
+    resistance=resistance,
+    decision_engine=EntryDecisionEngine(),
+)
+
 signal = decision["action"]
 state = load_state()
 last_signal = state.get("signal")
@@ -174,6 +185,25 @@ if should_send:
     lines.append("🧠 AI 分數重點")
     for item in explain_summary:
         lines.append(item)
+
+    lines.append("")
+    lines.append("🔮 情境模擬")
+    lines.append(f"如果 {macd_scenario['scenario']}：")
+    lines.append(
+        f"技術分數："
+        f"{macd_scenario['current_technical_score']} → "
+        f"{macd_scenario['projected_technical_score']}"
+    )
+    lines.append(
+        f"綜合評分可能提升至："
+        f"{macd_scenario['projected_total_score']}/100｜"
+        f"{macd_scenario['projected_level']}"
+    )
+    lines.append(
+        f"預估決策：{macd_scenario['projected_action']}"
+    )
+    lines.append("此為規則模擬，不是獲利機率保證。")
+
     lines.append("")
     lines.append("莎莎，我會繼續巡邏，有更高勝率訊號再通知妳。")
 
