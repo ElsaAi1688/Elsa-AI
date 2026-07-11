@@ -2,7 +2,7 @@ import json, requests, pandas as pd
 from pathlib import Path
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from services.line_service import send_line_message
+from services.telegram_service import send_telegram_message
 from market_data.realtime_price import RealtimePrice
 from engine.technical_engine import TechnicalEngine
 from engine.fundamental_engine import FundamentalEngine
@@ -125,7 +125,7 @@ if should_send:
 
     msg = "\n".join(lines)
     print(msg)
-    send_line_message(msg)
+    send_telegram_message(msg)
 
     save_state({"signal": signal, "last_sent": now.isoformat(), "price": price})
 else:
