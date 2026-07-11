@@ -9,6 +9,7 @@ from engine.fundamental_engine import FundamentalEngine
 from engine.chip_engine import ChipEngine
 from engine.explain_engine import ExplainEngine
 from engine.scenario_engine import ScenarioEngine
+from engine.journal_engine import JournalEngine
 from decision_v2.entry_decision_engine import EntryDecisionEngine
 
 STATE = Path("/tmp/elsa_auo_state.json")
@@ -141,6 +142,40 @@ else:
 signal = f"{alert_level}:{decision['action']}"
 
 state = load_state()
+
+journal_record = {
+    "stock_id": STOCK_ID,
+    "stock_name": "友達",
+    "time": now.isoformat(),
+    "price": price,
+    "support": support,
+    "resistance": resistance,
+    "technical_score": int(technical["score"]),
+    "fundamental_score": int(fundamental["score"]),
+    "chip_score": int(chip["score"]),
+    "decision_score": int(decision["score"]),
+    "alert_level": alert_level,
+    "action": decision["action"],
+    "entry_low": decision["entry_low"],
+    "entry_high": decision["entry_high"],
+    "stop_loss": decision["stop_loss"],
+    "target1": decision["target1"],
+    "target2": decision["target2"],
+    "macd_bullish": any(
+        item.get("name") == "MACD"
+        and "翻紅" in str(item.get("status", ""))
+        for item in technical.get("explain", [])
+    ),
+    "kd_golden": any(
+        item.get("name") == "KD"
+        and "黃金交叉" in str(item.get("status", ""))
+        for item in technical.get("explain", [])
+    ),
+}
+
+JournalEngine().save(journal_record)
+print("✅ Journal 已記錄本次友達決策", flush=True)
+
 last_signal = state.get("signal")
 last_sent = state.get("last_sent")
 
