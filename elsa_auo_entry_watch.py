@@ -129,7 +129,17 @@ macd_scenario = ScenarioEngine().simulate_macd_bullish(
     decision_engine=EntryDecisionEngine(),
 )
 
-signal = decision["action"]
+score = int(decision["score"])
+
+if score >= 80:
+    alert_level = "ENTRY_READY"
+elif score >= 68:
+    alert_level = "WATCH"
+else:
+    alert_level = "WAIT"
+
+signal = f"{alert_level}:{decision['action']}"
+
 state = load_state()
 last_signal = state.get("signal")
 last_sent = state.get("last_sent")
@@ -143,7 +153,12 @@ else:
 
 if should_send:
     lines = []
-    lines.append("🧠 Elsa Decision Engine v3｜友達")
+    if decision["score"] >= 80:
+        lines.append("🚨 Elsa 友達進場警報")
+    elif decision["score"] >= 68:
+        lines.append("🟡 Elsa 友達進場觀察")
+    else:
+        lines.append("🧠 Elsa Decision Engine v3｜友達")
     lines.append("=" * 30)
     lines.append(f"時間：{now.strftime('%Y-%m-%d %H:%M:%S')}")
     lines.append(f"最近成交／收盤價：{price}")
