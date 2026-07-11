@@ -7,6 +7,7 @@ from market_data.realtime_price import RealtimePrice
 from engine.technical_engine import TechnicalEngine
 from engine.fundamental_engine import FundamentalEngine
 from engine.chip_engine import ChipEngine
+from engine.explain_engine import ExplainEngine
 from decision_v2.entry_decision_engine import EntryDecisionEngine
 
 STATE = Path("/tmp/elsa_auo_state.json")
@@ -111,6 +112,12 @@ decision = EntryDecisionEngine().evaluate({
     "chip_score": chip["score"]
 })
 
+explain_summary = ExplainEngine().summarize(
+    technical,
+    fundamental,
+    chip
+)
+
 signal = decision["action"]
 state = load_state()
 last_signal = state.get("signal")
@@ -163,6 +170,10 @@ if should_send:
     lines.append(f"停損：{decision['stop_loss']}")
     lines.append(f"目標一：{decision['target1']}")
     lines.append(f"目標二：{decision['target2']}")
+    lines.append("")
+    lines.append("🧠 AI 分數重點")
+    for item in explain_summary:
+        lines.append(item)
     lines.append("")
     lines.append("莎莎，我會繼續巡邏，有更高勝率訊號再通知妳。")
 
