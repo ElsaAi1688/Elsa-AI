@@ -10,6 +10,7 @@ from engine.chip_engine import ChipEngine
 from engine.explain_engine import ExplainEngine
 from engine.scenario_engine import ScenarioEngine
 from engine.journal_engine import JournalEngine
+from engine.event_engine import EventEngine
 from decision_v2.entry_decision_engine import EntryDecisionEngine
 
 STATE = Path("/tmp/elsa_auo_state.json")
@@ -143,6 +144,32 @@ signal = f"{alert_level}:{decision['action']}"
 
 state = load_state()
 
+macd_bullish = any(
+    item.get("name") == "MACD"
+    and "翻紅" in str(item.get("status", ""))
+    for item in technical.get("explain", [])
+)
+
+kd_golden = any(
+    item.get("name") == "KD"
+    and "黃金交叉" in str(item.get("status", ""))
+    for item in technical.get("explain", [])
+)
+
+price_breakout = price >= resistance
+
+current_event_state = {
+    "decision_score": int(decision["score"]),
+    "action": decision["action"],
+    "macd_bullish": macd_bullish,
+    "kd_golden": kd_golden,
+    "breakout": price_breakout,
+}
+
+event_engine = EventEngine()
+events = event_engine.detect(state, current_event_state)
+event_descriptions = event_engine.describe(events)
+
 journal_record = {
     "stock_id": STOCK_ID,
     "stock_name": "友達",
@@ -161,16 +188,10 @@ journal_record = {
     "stop_loss": decision["stop_loss"],
     "target1": decision["target1"],
     "target2": decision["target2"],
-    "macd_bullish": any(
-        item.get("name") == "MACD"
-        and "翻紅" in str(item.get("status", ""))
-        for item in technical.get("explain", [])
-    ),
-    "kd_golden": any(
-        item.get("name") == "KD"
-        and "黃金交叉" in str(item.get("status", ""))
-        for item in technical.get("explain", [])
-    ),
+    "events": events,
+    "macd_bullish": macd_bullish,
+    "kd_golden": kd_golden,
+    "breakout": price_breakout,
 }
 
 JournalEngine().save(journal_record)
@@ -179,12 +200,8 @@ print("✅ Journal 已記錄本次友達決策", flush=True)
 last_signal = state.get("signal")
 last_sent = state.get("last_sent")
 
-should_send = False
-if signal != last_signal or not last_sent:
-    should_send = True
-else:
-    last_time = datetime.fromisoformat(last_sent)
-    should_send = (now - last_time).total_seconds() >= 1800
+# Event Engine v2：只有重要事件發生才通知
+should_send = bool(events)
 
 if should_send:
     lines = []
@@ -224,6 +241,13 @@ if should_send:
         lines.append(f"・{item['name']}｜{item['status']}｜{sign}{item['points']}分")
         lines.append(f"  {item['reason']}")
     lines.append("")
+
+    if event_descriptions:
+        lines.append("🚨 本次觸發事件")
+        for event_text in event_descriptions:
+            lines.append(f"・{event_text}")
+        lines.append("")
+
     lines.append("👩‍💼 Elsa 最終決策")
     lines.append(f"建議：{decision['action']}")
     lines.append(f"綜合評分：{decision['score']}/100｜{decision['level']}")
@@ -261,6 +285,17 @@ if should_send:
     print(msg)
     send_telegram_message(msg)
 
-    save_state({"signal": signal, "last_sent": now.isoformat(), "price": price})
+    save_state({
+        "signal": signal,
+        "last_sent": now.isoformat(),
+        "price": price,
+        "support": support,
+        "resistance": resistance,
+        "decision_score": int(decision["score"]),
+        "action": decision["action"],
+        "macd_bullish": macd_bullish,
+        "kd_golden": kd_golden,
+        "breakout": price_breakout,
+    })
 else:
     print(f"友達巡邏完成，不重複通知｜{signal}｜現價 {price}")
